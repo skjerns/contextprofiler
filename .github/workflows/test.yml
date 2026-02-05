@@ -54,7 +54,7 @@ jobs:
           pip install -e ".[dev]"
 
       - name: Lint with ruff
-        run: ruff check src/
+        run: ruff check contextprofiler/
 
       - name: Type check with mypy
-        run: mypy src/
+        run: mypy contextprofiler/
