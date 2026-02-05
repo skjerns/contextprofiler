@@ -2,13 +2,9 @@
 
 A simple line-by-line profiler for Python code blocks using context managers.
 
-## Installation
-
 ```bash
 pip install contextprofiler
 ```
-
-## Quick Start
 
 ```python
 import contextprofiler
@@ -21,7 +17,6 @@ with contextprofiler:
 ```
 
 Output:
-
 ```
 --------------------------------------------------------------------------------
 Line-by-Line Profile
@@ -34,77 +29,9 @@ Total time: 0.1560s
 --------------------------------------------------------------------------------
 ```
 
-## Usage
+You can also use `from contextprofiler import ContextProfiler` and `with ContextProfiler:`, or create independent instances with `ContextProfiler()` when you need isolation. The profiler exits cleanly on exceptions, printing results before propagating.
 
-### Module as Context Manager
-
-The simplest way to use contextprofiler is directly as a context manager:
-
-```python
-import contextprofiler
-
-with contextprofiler:
-    # code to profile
-    ...
-```
-
-### Explicit Import
-
-You can also import `ContextProfiler` explicitly:
-
-```python
-from contextprofiler import ContextProfiler
-
-with ContextProfiler:
-    # code to profile
-    ...
-```
-
-### Fresh Instance
-
-Create independent instances when you need isolation:
-
-```python
-from contextprofiler import ContextProfiler
-
-with ContextProfiler():
-    # profiled independently
-    ...
-```
-
-### Exception Handling
-
-The profiler exits cleanly on exceptions, printing results before the exception propagates:
-
-```python
-import contextprofiler
-
-with contextprofiler:
-    x = expensive_operation()
-    raise ValueError("oops")  # Results still printed
-```
-
-## How It Works
-
-ContextProfiler uses Python's `sys.settrace()` mechanism to trace line execution within the profiled block. For each line executed:
-
-1. Records the time since the previous line completed
-2. Accumulates timing for lines executed multiple times (loops)
-3. On exit, calculates percentages and prints a color-coded report
-
-## Output
-
-- **Percentage**: Time spent on this line relative to total block time
-- **Time**: Absolute time in seconds
-- **Code**: The source code of the line
-
-Lines are displayed in execution order. Colors range from white (low percentage) to red (high percentage) when terminal colors are supported.
-
-## Limitations
-
-- Only profiles the immediate code block, not called functions
-- Uses `sys.settrace()` which adds overhead (not for production use)
-- Timing resolution depends on the system's `time.perf_counter()`
+Uses `sys.settrace()` to trace line execution. Only profiles the immediate code block, not called functions. Colors range from white (low %) to red (high %) when supported.
 
 ## License
 
