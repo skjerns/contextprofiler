@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import inspect
 import linecache
+import os
 import sys
 import time
 from collections import defaultdict
@@ -11,6 +12,9 @@ from types import FrameType, TracebackType
 from typing import Any
 
 from ._colors import RESET, rgb_fg_ansi, supports_color, white_to_red_rgb
+
+# Package directory for frame detection
+_PKG_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 class _ProfilerImpl:
@@ -40,16 +44,22 @@ class _ProfilerImpl:
         self._reset()
         frame = inspect.currentframe()
         assert frame is not None
-        # Walk up until we find a frame outside this module file
-        this_file = frame.f_code.co_filename
-        pkg_dir = this_file.rsplit("/", 1)[0] if "/" in this_file else ""
+        # Walk up until we find a frame outside the contextprofiler package
         while frame is not None:
             frame = frame.f_back
             if frame is None:
                 break
             filename = frame.f_code.co_filename
-            # Stop when we exit the contextprofiler package directory
-            if not filename.startswith(pkg_dir):
+            # Handle special filenames like <string>, <stdin>, etc.
+            if filename.startswith("<"):
+                break
+            # Check if file is outside the package directory
+            try:
+                abs_filename = os.path.abspath(filename)
+                if not abs_filename.startswith(_PKG_DIR + os.sep):
+                    break
+            except (ValueError, OSError):
+                # Path comparison failed, assume outside package
                 break
         assert frame is not None, "Could not find caller frame"
         self._target_frame = frame
