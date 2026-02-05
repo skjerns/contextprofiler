@@ -54,6 +54,17 @@ class TestBasicProfiling:
         assert isinstance(profiler1, _ProfilerImpl)
         assert isinstance(profiler2, _ProfilerImpl)
 
+    def test_module_as_context_manager(self, capsys, no_color_env):
+        """Test that the module itself can be used as a context manager."""
+        import contextprofiler
+
+        with contextprofiler:
+            time.sleep(0.01)
+
+        captured = capsys.readouterr()
+        assert "Line-by-Line Profile" in captured.out
+        assert "time.sleep" in captured.out
+
     def test_exception_handling(self, capsys, no_color_env):
         """Test that profiler exits cleanly on exception."""
         with pytest.raises(ValueError):

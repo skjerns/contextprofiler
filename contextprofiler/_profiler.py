@@ -40,8 +40,19 @@ class _ProfilerImpl:
         self._reset()
         frame = inspect.currentframe()
         assert frame is not None
-        self._target_frame = frame.f_back
-        assert self._target_frame is not None
+        # Walk up until we find a frame outside this module file
+        this_file = frame.f_code.co_filename
+        pkg_dir = this_file.rsplit("/", 1)[0] if "/" in this_file else ""
+        while frame is not None:
+            frame = frame.f_back
+            if frame is None:
+                break
+            filename = frame.f_code.co_filename
+            # Stop when we exit the contextprofiler package directory
+            if not filename.startswith(pkg_dir):
+                break
+        assert frame is not None, "Could not find caller frame"
+        self._target_frame = frame
         self._entry_lineno = self._target_frame.f_lineno
         self._start_time = time.perf_counter()
         self._last_time = self._start_time

@@ -11,10 +11,10 @@ pip install contextprofiler
 ## Quick Start
 
 ```python
-from contextprofiler import ContextProfiler
+import contextprofiler
 import time
 
-with ContextProfiler:
+with contextprofiler:
     time.sleep(0.1)
     x = sum(range(10000))
     time.sleep(0.05)
@@ -36,9 +36,21 @@ Total time: 0.1560s
 
 ## Usage
 
-### Singleton Instance
+### Module as Context Manager
 
-Use the shared `ContextProfiler` instance for quick profiling:
+The simplest way to use contextprofiler is directly as a context manager:
+
+```python
+import contextprofiler
+
+with contextprofiler:
+    # code to profile
+    ...
+```
+
+### Explicit Import
+
+You can also import `ContextProfiler` explicitly:
 
 ```python
 from contextprofiler import ContextProfiler
@@ -65,7 +77,9 @@ with ContextProfiler():
 The profiler exits cleanly on exceptions, printing results before the exception propagates:
 
 ```python
-with ContextProfiler:
+import contextprofiler
+
+with contextprofiler:
     x = expensive_operation()
     raise ValueError("oops")  # Results still printed
 ```
