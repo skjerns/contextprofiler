@@ -51,17 +51,8 @@ Homepage = "https://github.com/skjerns/contextprofiler"
 Repository = "https://github.com/skjerns/contextprofiler"
 Issues = "https://github.com/skjerns/contextprofiler/issues"
 
-[tool.hatch.build.targets.sdist]
-include = [
-    "/src",
-]
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/contextprofiler"]
-
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
 
 [tool.mypy]
 python_version = "3.9"
