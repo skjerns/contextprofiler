@@ -25,6 +25,9 @@ from __future__ import annotations
 import sys
 import types
 
+if sys.version_info < (3, 10):
+    raise RuntimeError("contextprofiler requires Python 3.10 or later")
+
 from contextprofiler._profiler import _ProfilerImpl
 
 __version__ = "0.1.0"
